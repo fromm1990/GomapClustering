@@ -1,0 +1,11 @@
+version: "2.3"
+services:
+  gomap-clustering:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes: 
+      - ../:/root/gomap-clustering
+      - ~/.ssh:/root/.ssh
+    command: > 
+      bash -c "tail -F /dev/null"

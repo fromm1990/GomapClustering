@@ -1,0 +1,16 @@
+{
+    "dockerComposeFile": "./docker-compose.yml",
+    "service": "gomap-clustering",
+    "workspaceFolder": "/root/gomap-clustering",
+    "extensions": [
+        "ms-python.python", 
+        "ms-python.vscode-pylance", 
+        "ms-toolsai.jupyter"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "python.pythonPath": "/usr/local/bin/python",
+        "python.languageServer": "Pylance"
+    },
+    "postCreateCommand": "bash ./.devcontainer/setup.sh"
+}
