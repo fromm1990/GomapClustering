@@ -2,7 +2,7 @@
 wandb/
 
 # Ignore auto generated C file
-./src/GoMapClustering/AngularClustering/fcm4dd.c
+src/GoMapClustering/AngularClustering/fcm4dd.c
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
