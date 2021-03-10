@@ -6,16 +6,31 @@ from optuna.trial import Trial
 
 from HpOptimization.gomap_study import GoMapStudy
 
-projec_dir = Path(__file__).parent.parent.parent
-print(projec_dir)
-training_data = data_loader.load_gomap_detections(projec_dir / 'data' / 'hp_tuning' / 'training.geojson')
-training_truth_data = data_loader.load_gomap_truths(projec_dir / 'data' / 'hp_tuning' / 'training_truth.geojson')
+data_dir = Path.cwd() / 'data' / 'hp_tuning'
 
-validation_data = data_loader.load_gomap_detections(projec_dir / 'data' / 'hp_tuning' / 'validation.geojson')
-validation_truth_data = data_loader.load_gomap_truths(projec_dir / 'data' / 'hp_tuning' / 'validation_truth.geojson')
+# Training
+training_data = data_loader.load_gomap_detections(
+    data_dir / 'training.geojson'
+)
+training_truth_data = data_loader.load_gomap_truths(
+    data_dir / 'training_truth.geojson'
+)
 
-test_data = data_loader.load_gomap_detections(projec_dir / 'data' / 'hp_tuning' / 'testing.geojson')
-test_truth_data = data_loader.load_gomap_truths(projec_dir / 'data' / 'hp_tuning' / 'testing_truth.geojson')
+# Validation
+validation_data = data_loader.load_gomap_detections(
+    data_dir / 'validation.geojson'
+)
+validation_truth_data = data_loader.load_gomap_truths(
+    data_dir / 'validation_truth.geojson'
+)
+
+# Testing
+test_data = data_loader.load_gomap_detections(
+    data_dir / 'testing.geojson'
+)
+test_truth_data = data_loader.load_gomap_truths(
+    data_dir / 'testing_truth.geojson'
+)
 
 
 def spawner(trial: Trial):
