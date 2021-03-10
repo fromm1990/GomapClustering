@@ -4,7 +4,8 @@ from typing import Callable, Dict, List, Tuple, Union
 import numpy as np
 from GoMapClustering import utility
 from GoMapClustering.base import GoMapClusterMixin
-from GoMapClustering.utility import TWO_PI, AngleIndexer, Position
+from GoMapClustering.utility import TWO_PI, AngleIndexer
+from model import Position
 from numpy import ndarray
 from pandas import DataFrame, Series
 from shapely.geometry.point import Point

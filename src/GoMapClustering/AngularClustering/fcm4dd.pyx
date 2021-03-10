@@ -5,7 +5,6 @@ import numpy as np
 cimport numpy as np
 from numpy cimport ndarray, float32_t
 from sklearn.base import ClusterMixin
-from string_builder import StringBuilder
 
 cdef float PI = math.pi
 cdef float NEGATIVE_PI = -1 * math.pi
@@ -53,11 +52,12 @@ cdef class FCM4DD():
         try:
             return np.shape(X)[1]
         except:
-            sb = StringBuilder('Expected 2D array, got 1D array instead:')\
-                .add_line(X)\
-                .add_line('Reshape your data either using array.reshape(-1, 1) if your data has a single feature ')\
-                .add('or array.reshape(1, -1) if it contains a single sample.')
-            raise ValueError(sb)
+            msg = "\n".join([
+                'Expected 2D array, got 1D array instead:',
+                X,
+                'Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.'
+            ])
+            raise ValueError(msg)
 
 
     cpdef __assign_angle_diffs(

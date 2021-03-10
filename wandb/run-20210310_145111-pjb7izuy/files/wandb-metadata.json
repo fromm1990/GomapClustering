@@ -1,0 +1,22 @@
+{
+    "os": "Linux-4.19.128-microsoft-standard-x86_64-with-glibc2.2.5",
+    "python": "3.8.6",
+    "heartbeatAt": "2021-03-10T14:51:12.589810",
+    "startedAt": "2021-03-10T14:51:11.710239",
+    "docker": null,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/root/gomap-clustering/src/HpOptimization/hp_tune_4d_dbscan.py",
+    "codePath": "src/HpOptimization/hp_tune_4d_dbscan.py",
+    "git": {
+        "remote": "https://github.com/fromm1990/GomapClustering.git",
+        "commit": "215755fcc7c44d2fd612993e5315808ec676bdb6"
+    },
+    "email": "kasperf@cs.aau.dk",
+    "root": "/root/gomap-clustering",
+    "host": "299494b3ee14",
+    "username": "root",
+    "executable": "/usr/local/bin/python"
+}
