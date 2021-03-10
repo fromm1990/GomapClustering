@@ -1,4 +1,8 @@
+# Ignore weights and biases cache
 wandb/
+
+# Ignore auto generated C file
+./src/GoMapClustering/AngularClustering/fcm4dd.c
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
