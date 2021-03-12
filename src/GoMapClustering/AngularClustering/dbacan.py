@@ -1,12 +1,14 @@
 import math
 
 import numpy as np
-from GoMapClustering.utility import PI, TWO_PI
 from numpy import ndarray
 from pandas.core.frame import DataFrame
 from pandas.core.series import Series
 from sklearn.base import ClusterMixin
 from sklearn.cluster import DBSCAN
+
+PI = math.pi
+TWO_PI = PI * 2
 
 
 class DBACAN(ClusterMixin):

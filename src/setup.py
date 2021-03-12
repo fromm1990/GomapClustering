@@ -11,7 +11,8 @@ requirements = [
     'optuna==2.6.0',
     'wandb==0.10.22',
     'plotly==4.14.3',
-    'Cython==0.29.22'
+    'Cython==0.29.22',
+    'geopandas==0.9.0'
 ]
 
 setup(

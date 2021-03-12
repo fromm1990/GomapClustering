@@ -10,7 +10,14 @@
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash",
         "python.pythonPath": "/usr/local/bin/python",
-        "python.languageServer": "Pylance"
+        "python.languageServer": "Pylance",
+        "python.testing.unittestEnabled": false,
+        "python.testing.nosetestsEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": [
+            "src",
+            "--capture=tee-sys"
+        ]
     },
     "postCreateCommand": "bash ./.devcontainer/setup.sh"
 }

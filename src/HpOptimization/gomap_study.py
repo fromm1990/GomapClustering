@@ -3,13 +3,12 @@ import math
 from logging import FileHandler, Logger, StreamHandler
 from typing import Callable
 
-import notebook_utils as utils
+import utility
 import numpy as np
 import optuna
 import plotly.express as px
 import wandb
 from evaluator import GoMapEvaluator
-from GoMapClustering import utility
 from GoMapClustering.base import GoMapClusterMixin
 from optuna import Study
 from optuna.trial import FrozenTrial, Trial
@@ -87,9 +86,9 @@ class GoMapStudy(Study):
 
 
     def stop(self) -> None:
-        val_eval = self.__get_evaluator(self.validation, self.validation_truth, self.best_validation_trial)
-        train_eval = self.__get_evaluator(self.training, self.training_truth, self.best_training_trial)
-        test_eval = self.__get_evaluator(self.testing, self.testing_truth, self.best_validation_trial)
+        val_eval = self.__get_evaluation(self.validation, self.validation_truth, self.best_validation_trial)
+        train_eval = self.__get_evaluation(self.training, self.training_truth, self.best_training_trial)
+        test_eval = self.__get_evaluation(self.testing, self.testing_truth, self.best_validation_trial)
 
         wandb.config.update({
             'params': self.best_validation_trial.params
@@ -99,9 +98,9 @@ class GoMapStudy(Study):
             'f1': test_eval.f1,
             'recall': test_eval.recall,
             'precision': test_eval.precision,
-            'rmse_angle': math.degrees(test_eval.rmse_angle),
+            'rmse_angle': test_eval.rmse_direction_degrees,
             'rmse_location': test_eval.rmse_location,
-            'mae_angle': math.degrees(test_eval.mae_angle),
+            'mae_angle': test_eval.mae_direction_degrees,
             'mae_location': test_eval.mae_location
         })
 
@@ -134,46 +133,80 @@ class GoMapStudy(Study):
 
 
     @staticmethod
-    def __plot_angle_error_box(val_eval, train_eval, test_eval):
-        values = np.concatenate((
-            np.degrees(val_eval.angle_errors),
-            np.degrees(train_eval.angle_errors),
-            np.degrees(test_eval.angle_errors)
-        ))
-        df = DataFrame(values, columns=['angle_error'])
-        df['type'] = np.concatenate((
-            np.full(len(val_eval.angle_errors), 'validation'),
-            np.full(len(train_eval.angle_errors), 'training'),
-            np.full(len(test_eval.angle_errors), 'testing')
-        ))
+    def __plot_angle_error_box(
+        val_eval: GoMapEvaluator.Evaluation,
+        train_eval: GoMapEvaluator.Evaluation,
+        test_eval: GoMapEvaluator.Evaluation
+    ):
+        # TODO: Check if this is a possible way to solve
+        val_errors = DataFrame(val_eval.errors['direction_error'], columns=['angle_error'])
+        val_errors['type'] = 'validation'
+
+        train_errors = DataFrame(train_eval.errors['direction_error'], columns=['angle_error'])
+        train_errors['type'] = 'training'
+
+        test_errors = DataFrame(test_eval.errors['direction_error'], columns=['angle_error'])
+        test_errors['type'] = 'testing'
+
         
+        df = val_errors.append([train_errors, test_errors])
         return px.box(df, x="type", y="angle_error")
+
+        # values = np.concatenate((
+        #     np.degrees(val_eval.errors['direction_error']),
+        #     np.degrees(train_eval.errors['direction_error']),
+        #     np.degrees(test_eval.errors['direction_error'])
+        # ))
+        # df = DataFrame(values, columns=['angle_error'])
+        # df['type'] = np.concatenate((
+        #     np.full(len(val_eval.errors['direction_error']), 'validation'),
+        #     np.full(len(train_eval.errors['direction_error']), 'training'),
+        #     np.full(len(test_eval.errors['direction_error']), 'testing')
+        # ))
+        
+        # return px.box(df, x="type", y="angle_error")
 
 
     @staticmethod
-    def __plot_location_error_box(val_eval, train_eval, test_eval):
-        values = np.concatenate((
-            val_eval.location_errors,
-            train_eval.location_errors,
-            test_eval.location_errors
-        ))
-        df = DataFrame(values, columns=['location_error'])
-        df['type'] = np.concatenate((
-            np.full(len(val_eval.location_errors), 'validation'),
-            np.full(len(train_eval.location_errors), 'training'),
-            np.full(len(test_eval.location_errors), 'testing')
-        ))
+    def __plot_location_error_box(
+        val_eval: GoMapEvaluator.Evaluation,
+        train_eval: GoMapEvaluator.Evaluation,
+        test_eval: GoMapEvaluator.Evaluation
+    ):
+        val_errors = DataFrame(val_eval.errors['location_error'], columns=['location_error'])
+        val_errors['type'] = 'validation'
 
+        train_errors = DataFrame(train_eval.errors['location_error'], columns=['location_error'])
+        train_errors['type'] = 'training'
+
+        test_errors = DataFrame(test_eval.errors['location_error'], columns=['location_error'])
+        test_errors['type'] = 'testing'
+
+        df = val_errors.append([train_errors, test_errors])
         return px.box(df, x="type", y="location_error")
 
+        # values = np.concatenate((
+        #     val_eval.location_errors,
+        #     train_eval.location_errors,
+        #     test_eval.location_errors
+        # ))
+        # df = DataFrame(values, columns=['location_error'])
+        # df['type'] = np.concatenate((
+        #     np.full(len(val_eval.location_errors), 'validation'),
+        #     np.full(len(train_eval.location_errors), 'training'),
+        #     np.full(len(test_eval.location_errors), 'testing')
+        # ))
 
-    def __get_evaluator(self, data, truths, trial):
-        predictions = utils.get_predictions(
+        # return px.box(df, x="type", y="location_error")
+
+
+    def __get_evaluation(self, data, truths, trial) -> GoMapEvaluator.Evaluation:
+        predictions = utility.get_predictions(
             data,
             self.spawner(trial),
             utility.compute_cluster_centroid
         )
-        return GoMapEvaluator(predictions, truths)
+        return GoMapEvaluator(predictions, truths).evaluate()
 
 
     def __get_logger(self, logfile: str = None) -> logging.Logger:
@@ -191,40 +224,42 @@ class GoMapStudy(Study):
     
 
     @staticmethod
-    def __get_loss(evaluator: GoMapEvaluator) -> float:
+    def __get_loss(evaluator: GoMapEvaluator.Evaluation) -> float:
         return 1 - evaluator.f1
 
 
     def __validation_objective(self, trial: FrozenTrial) -> None:
-        evaluator = self.__get_evaluator(self.validation, self.validation_truth, trial)
+        evaluation = self.__get_evaluation(self.validation, self.validation_truth, trial)
+
         wandb.log({
             'validation': {
-                'mae_angle': math.degrees(evaluator.mae_angle),
-                'mae_location': evaluator.mae_location,
-                'rmse_angle': math.degrees(evaluator.rmse_angle),
-                'rmse_location': evaluator.rmse_location,
-                'recall': evaluator.recall,
-                'precision': evaluator.precision,
-                'f1': evaluator.f1
+                'mae_angle': evaluation.mse_direction_degrees,
+                'mae_location': evaluation.mae_location,
+                'rmse_angle': evaluation.rmse_direction_degrees,
+                'rmse_location': evaluation.rmse_location,
+                'recall': evaluation.recall,
+                'precision': evaluation.precision,
+                'f1': evaluation.f1
             }
         })
-        self.validation_loss.append(self.__get_loss(evaluator))
+        self.validation_loss.append(self.__get_loss(evaluation))
 
     
     def __training_objective(self, trial: FrozenTrial) -> None:
-        evaluator = self.__get_evaluator(self.training, self.training_truth, trial)
+        evaluation = self.__get_evaluation(self.training, self.training_truth, trial)
+
         wandb.log({
             'training': {
-                'mae_angle': math.degrees(evaluator.mae_angle),
-                'mae_location': evaluator.mae_location,
-                'rmse_angle': math.degrees(evaluator.rmse_angle),
-                'rmse_location': evaluator.rmse_location,
-                'recall': evaluator.recall,
-                'precision': evaluator.precision,
-                'f1': evaluator.f1
+                'mae_angle': evaluation.mse_direction_degrees,
+                'mae_location': evaluation.mae_location,
+                'rmse_angle': evaluation.rmse_direction_degrees,
+                'rmse_location': evaluation.rmse_location,
+                'recall': evaluation.recall,
+                'precision': evaluation.precision,
+                'f1': evaluation.f1
             }
         })
-        self.training_loss.append(self.__get_loss(evaluator))
+        self.training_loss.append(self.__get_loss(evaluation))
 
 
     def __objective(self, trial: Trial) -> float:
@@ -241,7 +276,7 @@ class GoMapStudy(Study):
 
     def __best_result_logger(self, study: Study, trial: FrozenTrial):
         if study.best_trial == trial:
-            self.logger.info(f'Trial: {trial.number}, Parameters: {trial.params}, Value: {trial.value}')
+            self.logger.info(f'Trial: {trial.number}, Parameters: {trial.params}, loss: {trial.value}')
 
 
     def __loss_logger(self, study: Study, trial: FrozenTrial):
