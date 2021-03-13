@@ -1,3 +1,2 @@
-#!/bin/ash
-pip install -r ./.devcontainer/requirements.txt
+#!/bin/bash
 pip install -e ./src/
