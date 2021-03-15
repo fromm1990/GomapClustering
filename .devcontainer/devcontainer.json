@@ -1,7 +1,10 @@
 {
-    "dockerComposeFile": "./docker-compose.yml",
-    "service": "gomap-clustering",
+    "name": "gomap-clustering",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
     "workspaceFolder": "/root/gomap-clustering",
+    "workspaceMount": "source=gomap-clustering,target=/root/gomap-clustering,type=volume",
     "extensions": [
         "ms-python.python", 
         "ms-python.vscode-pylance", 
@@ -20,5 +23,5 @@
         ],
         "jupyter.jupyterServerType": "local"
     },
-    "postCreateCommand": "git clone https://github.com/fromm1990/GomapClustering.git . && pip install -e ./src/"
+    "postCreateCommand": "bash /root/setup.sh"
 }
