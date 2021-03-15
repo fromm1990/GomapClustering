@@ -1,7 +1,7 @@
 #!/bin/bash
-if [ ! -d ".git" ]; then
+if [ -d ".git" ]; then
+    echo "Repo already cloned"
+else
     git clone https://github.com/fromm1990/GomapClustering.git .
     pip install -e ./src/
-else
-    echo "Repo already cloned"
 fi
