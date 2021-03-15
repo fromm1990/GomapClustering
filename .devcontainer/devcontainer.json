@@ -19,5 +19,5 @@
             "--capture=tee-sys"
         ]
     },
-    "postCreateCommand": "bash ./.devcontainer/setup.sh"
+    "postCreateCommand": "git clone https://github.com/fromm1990/GomapClustering.git . && pip install -e ./src/"
 }

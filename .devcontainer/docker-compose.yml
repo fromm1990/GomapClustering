@@ -5,7 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes: 
-      - ../:/root/gomap-clustering
-      - ~/.ssh:/root/.ssh
+      - gomap-clustering:/root/gomap-clustering
     command: > 
       bash -c "tail -F /dev/null"
+volumes: 
+  gomap-clustering:
