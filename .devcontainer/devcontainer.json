@@ -17,7 +17,8 @@
         "python.testing.pytestArgs": [
             "src",
             "--capture=tee-sys"
-        ]
+        ],
+        "jupyter.jupyterServerType": "local"
     },
     "postCreateCommand": "git clone https://github.com/fromm1990/GomapClustering.git . && pip install -e ./src/"
 }
