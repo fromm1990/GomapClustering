@@ -12,7 +12,8 @@ requirements = [
     'wandb==0.10.22',
     'plotly==4.14.3',
     'Cython==0.29.22',
-    'geopandas==0.9.0'
+    'geopandas==0.9.0',
+    'contextily==1.1.0'
 ]
 
 setup(
