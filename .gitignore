@@ -4,6 +4,9 @@ wandb/
 # Ignore auto generated C file
 src/GoMapClustering/AngularClustering/fcm4dd.c
 
+# Ignore auto generated results
+src/notebooks/output
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
