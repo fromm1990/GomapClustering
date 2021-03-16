@@ -1,13 +1,12 @@
-import math
 from pathlib import Path
 
 import data_loader
-from GoMapClustering import AngleMetricDBSCAN
+from GoMapClustering import DBSCANFCM4DD
 from optuna.trial import Trial
 
-from HpOptimization.gomap_study import GoMapStudy
+from tuning.gomap_study import GoMapStudy
 
-data_dir = Path.cwd() / 'data' / 'hp_tuning'
+data_dir = Path() / 'data' / 'hp_tuning'
 
 # Training
 training_data = data_loader.load_gomap_detections(
@@ -35,18 +34,25 @@ test_truth_data = data_loader.load_gomap_truths(
 
 
 def spawner(trial: Trial):
-    max_distance = trial.suggest_float('max_distance', 0.1, 100, step=0.1)
-    max_angle = trial.suggest_float('max_angle', 0.1, 180, step=0.1)
+    c = trial.suggest_int('c', 2, 10)
+    m = trial.suggest_discrete_uniform('m', 2, 10, 0.1)
+    max_iteratians = trial.suggest_int('max_iteratians', 10, 200)
+    min_improvement = trial.suggest_uniform('min_improvement', 1e-9, 1)
+    max_distance = trial.suggest_discrete_uniform('max_distance', 0.1, 100, 0.1)
     min_samples = trial.suggest_int('min_samples', 0, 20)
 
-    return AngleMetricDBSCAN(
-        max_distance, 
-        math.radians(max_angle),
-        min_samples
+    return DBSCANFCM4DD(
+        c=c,
+        m=m,
+        max_iterations=max_iteratians,
+        min_improvement=min_improvement,
+        max_spatial_distance=max_distance,
+        min_samples=min_samples,
+        seed=1337
     )
 
 study = GoMapStudy(
-    'AngleMetricDBSCAN',
+    'DBSCAN + FCM4DD',
     spawner,
     training_data,
     validation_data,

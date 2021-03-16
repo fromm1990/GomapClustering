@@ -2,12 +2,12 @@ import math
 from pathlib import Path
 
 import data_loader
-from GoMapClustering import AngleBalancingDBSCAN
+from GoMapClustering import DBSCANx2
 from optuna.trial import Trial
 
-from HpOptimization.gomap_study import GoMapStudy
+from tuning.gomap_study import GoMapStudy
 
-data_dir = Path.cwd() / 'data' / 'hp_tuning'
+data_dir = Path() / 'data' / 'hp_tuning'
 
 # Training
 training_data = data_loader.load_gomap_detections(
@@ -39,11 +39,15 @@ def spawner(trial: Trial):
     max_angle = trial.suggest_float('max_angle', 0.1, 180, step=0.1)
     min_samples = trial.suggest_int('min_samples', 0, 20)
 
-    return AngleBalancingDBSCAN(max_distance, math.radians(max_angle), min_samples)
+    return DBSCANx2(
+        max_distance=max_distance,
+        max_angle=math.radians(max_angle),
+        min_samples=min_samples
+    )
 
 
 study = GoMapStudy(
-    'AngleBalancingDBSCAN',
+    '2xDBSCAN',
     spawner,
     training_data,
     validation_data,

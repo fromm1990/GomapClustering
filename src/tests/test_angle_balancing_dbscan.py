@@ -3,7 +3,6 @@ from unittest import TestCase
 
 import numpy as np
 from GoMapClustering import AngleBalancingDBSCAN
-from numpy.testing._private.utils import assert_equal
 
 
 class TestAngleBalancingDBSCAN(TestCase):
