@@ -8,6 +8,7 @@ from geojson import Feature, FeatureCollection, Point
 from pandas import DataFrame, Series
 from shapely.ops import cascaded_union, transform
 
+from GoMapClustering import DBSCAN, DBSCANFCM4DD, DBSCANx2, AngleBalancingDBSCAN, AngleMetricDBSCAN
 from GoMapClustering.base import GoMapClusterMixin
 from model import Position
 
@@ -136,3 +137,21 @@ def get_predictions(
     df = df[df['cid'] > -1]
     # Aggregate the data
     return aggregate(df, cluster_singularity)
+
+
+def get_approaches() -> List[GoMapClusterMixin]:
+    return [
+        AngleMetricDBSCAN(10.7, math.radians(27.5), 2),
+        AngleBalancingDBSCAN(11, math.radians(40.8), 2),
+        DBSCANx2(13.5, math.radians(34.2), 2),
+        DBSCANFCM4DD(
+            max_spatial_distance=10.5,
+            min_samples=2,
+            c=2,
+            m=8.3,
+            max_iterations=180,
+            min_improvement=0.48199954255368505,
+            seed=1337
+        ),
+        DBSCAN(3.9, 2)
+    ]
