@@ -18,6 +18,9 @@ The [devcontainer](https://code.visualstudio.com/docs/remote/containers) feature
 ## Git Issues
 If you have issues with git within the container environment, please check out [this](https://code.visualstudio.com/docs/remote/containers#_sharing-git-credentials-with-your-container) page.
 
+## Availability of Imagery
+A link to the imagery will be available, here on GitHub, before the SSTD 2021 conference the 23rd of August.
+
 ## Citing
 Are you using GoMapClustering or any of its resources, please cite out paper in your work.
 
