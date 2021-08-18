@@ -1,6 +1,6 @@
 # GomapClustering
 This repository is meant to ease the reproducibility of the work presented in the paper *Geolocating Traffic Signs using Large Imagery Datasets*.
-The [devcontainer](https://code.visualstudio.com/docs/remote/containers) feature used in this repository hopefully lowers the effort of running the provided code. Further, all data used in the paper can be found in the `data` folder with the exception of the imagery. Due to file size constraints, imagery can be downloaded via [this link](#). The link provides x high resolution images, which can be used for academic use (remember to cite).
+The [devcontainer](https://code.visualstudio.com/docs/remote/containers) feature used in this repository hopefully lowers the effort of running the provided code. Further, all data used in the paper can be found in the `data` folder with the exception of the imagery. Due to file size constraints, imagery can be downloaded via [this link](#). The link provides 12,986 high resolution images, which can be used for academic use (remember to cite).
 
 ## Requirements
 - [Visual Studio Code](https://code.visualstudio.com/)
