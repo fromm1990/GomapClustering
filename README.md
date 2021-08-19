@@ -25,10 +25,11 @@ A link to the imagery will be available, here on GitHub, before the SSTD 2021 co
 Are you using GoMapClustering or any of its resources, please cite out paper in your work.
 
 ```BibTeX
-@misc{gomapclustering,
+@inproceedings{gomapclustering,
   author =       {Kasper F. Pedersen and Kritian Torp},
   title =        {Geolocating Traffic Signs using Large Imagery Datasets},
-  howpublished = {\url{https://github.com/fromm1990/GomapClustering}},
+  booktitle =    {Proceedings of the 17th International Symposium on Spatial and Temporal Databases, {SSTD} 2021, August 23-25, 2021},
+  publisher =    {{ACM}},
   year =         {2021}
 }
 ```
